@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-
+//边界并发
 func walkFiles(done <-chan struct{}, root string) (<-chan string, <-chan error) {
 	paths := make(chan string)
 	errc := make(chan error, 1)
