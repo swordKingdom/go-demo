@@ -3,20 +3,27 @@ package mongodb
 import (
 	"fmt"
 
-	"this_is_a_explame/api"
+	"this_is_a_explame/lib/configloadder/conf"
+	"this_is_a_explame/lib/db/mongodb/api"
 )
 
-var mgoClient = make(map[string]*api.MgoClientPool,0)
+var mgoConnMap = make(map[string]*api.MongoSession)
 
-func GetMgoClient(key string)(*api.MgoClientPool,error){
-	if cli,ok :=mgoClient[key];ok{
-		return cli,nil
-	}else{
-		return nil,fmt.Errorf("the dbs %v is not't exist",key)
+func Mongo(key string) (*api.MongoSession, error) {
+	if conn, ok := mgoConnMap[key]; ok {
+		return conn, nil
+	} else {
+		return nil, fmt.Errorf("the db %v is not exist ", key)
 	}
 }
 
-func init(){
-	pool := api.NewMongoDBPoolWithConf("")
-	mgoClient[""] = pool
+func init() {
+	userName := conf.GlobalConf.GetString("userName", "hhh")
+	mgoConf := &api.MgoConf{
+		Username: userName,
+	}
+	session, err := api.NewMongoDBSessionWithConf(mgoConf)
+	if err == nil {
+		mgoConnMap[""] = session
+	}
 }

@@ -1,8 +1,8 @@
 package conf
 
 import (
-	"awesomeProject12/configloadder"
-	"awesomeProject12/file"
+	"this_is_a_explame/lib/configloadder"
+	"this_is_a_explame/lib/util"
 )
 
 var (
@@ -20,7 +20,7 @@ func initWithFileName(flieName string) error {
 }
 
 func init() {
-	projectFileList, err := file.GetDirList("./")
+	projectFileList, err := util.GetDirList("./")
 	if err == nil && len(projectFileList) != 0 {
 		success := false
 		for _, confFile := range defaultConfFileName {
