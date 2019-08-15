@@ -1,4 +1,4 @@
-package memory_cache
+package mcache
 
 import "sync"
 
