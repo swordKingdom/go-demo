@@ -2,30 +2,22 @@ package filewatcher
 
 import (
 	"log"
+	"time"
 
-	"github.com/howeyc/fsnotify"
+	"github.com/radovskyb/watcher"
 )
 
-func RunFileWatcher() {
-	watcher, err := fsnotify.NewWatcher()
-	defer watcher.Close()
-	if err != nil {
-		log.Fatal(err)
+//ProcessFunc 监听事件的处理函数
+type ProcessFunc func(*watcher.Watcher)
+
+//RunFileWatcher 启动文件监控
+func RunFileWatcher(fileName string, processer ProcessFunc, interval time.Duration) {
+	w := watcher.New()
+	w.SetMaxEvents(1)
+	w.FilterOps(watcher.Write)
+	w.Add(fileName)
+	if err := w.Start(interval); err != nil {
+		log.Fatalln(err)
 	}
-	done := make(chan bool)
-	go func() {
-		for {
-			select {
-			case ev := <-watcher.Event:
-				log.Println("event:", ev)
-			case err := <-watcher.Error:
-				log.Println("error:", err)
-			}
-		}
-	}()
-	err = watcher.Watch("testDir")
-	if err != nil {
-		log.Fatal(err)
-	}
-	<-done
+	go processer(w)
 }

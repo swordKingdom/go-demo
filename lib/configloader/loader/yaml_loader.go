@@ -8,11 +8,13 @@ import (
 	"github.com/ghodss/yaml"
 )
 
+//YamlLoader yaml配置文件加载对象
 type YamlLoader struct {
 	BaseConfLoader
 	confPath string
 }
 
+//LoadConfigFromFile 读取配置文件
 func (y *YamlLoader) LoadConfigFromFile(fileName string) {
 	y.BaseConfLoader.lock.Lock()
 	defer y.BaseConfLoader.lock.Unlock()
@@ -40,6 +42,7 @@ func (y *YamlLoader) LoadConfigFromFile(fileName string) {
 	y.confPath = path
 }
 
+//LoadConfigFromFileReader 从fileReader对象中读取配置
 func (y *YamlLoader) LoadConfigFromFileReader(file *os.File) {
 	y.BaseConfLoader.lock.Lock()
 	defer y.BaseConfLoader.lock.Unlock()
@@ -52,4 +55,8 @@ func (y *YamlLoader) LoadConfigFromFileReader(file *os.File) {
 		panic(err)
 	}
 	y.confPath = file.Name()
+}
+
+func (y *YamlLoader) ReLoadConf() {
+	y.LoadConfigFromFile(y.confPath)
 }

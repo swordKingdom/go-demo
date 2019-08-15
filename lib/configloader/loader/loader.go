@@ -8,20 +8,28 @@ import (
 )
 
 const (
+	//EnvConfBasePath 默认配置文件路径，配置在系统环境变量中
 	EnvConfBasePath = "ENV_CONF_FILE"
-	YamlConfType    = "yaml"
-	XmlConfType     = "xml"
-	TomlConfType    = "toml"
+	//YamlConfType yaml文件类型
+	YamlConfType = "yaml"
+	//XMLConfType xml文件类型
+	XMLConfType = "xml"
+	//TomlConfType toml文件类型
+	TomlConfType = "toml"
 
+	//FileNameDefultStepSep 文件后缀分割符号
 	FileNameDefultStepSep = "."
 )
 
+//ConfLoader 配置加载器接口
 type ConfLoader interface {
 	ConfLoaderOp
 	LoadConfigFromFile(file string)
 	LoadConfigFromFileReader(file *os.File)
+	ReLoadConf()
 }
 
+//ConfLoaderOp 获取配置对象操作的接口
 type ConfLoaderOp interface {
 	GetInt(key string, defultValue int) int
 	GetBool(key string, defultValue bool) bool
@@ -29,11 +37,13 @@ type ConfLoaderOp interface {
 	GetFloat(key string, defultValue float32) float32
 }
 
+//BaseConfLoader 配置文件对象操作的实现对象
 type BaseConfLoader struct {
 	confMap map[interface{}]interface{}
 	lock    *sync.Mutex
 }
 
+//GetInt 获取Int类型的配置参数
 func (b *BaseConfLoader) GetInt(key string, defultValue int) int {
 	if value, ok := b.confMap[key]; ok {
 		intValue, ok := value.(int)
@@ -45,6 +55,7 @@ func (b *BaseConfLoader) GetInt(key string, defultValue int) int {
 	return defultValue
 }
 
+//GetBool 获取bool类型的配置参数
 func (b *BaseConfLoader) GetBool(key string, defultValue bool) bool {
 	if value, ok := b.confMap[key]; ok {
 		bValue, ok := value.(bool)
@@ -56,6 +67,7 @@ func (b *BaseConfLoader) GetBool(key string, defultValue bool) bool {
 	return defultValue
 }
 
+//GetString 获取string类型的配置参数
 func (b *BaseConfLoader) GetString(key string, defultValue string) string {
 	if value, ok := b.confMap[key]; ok {
 		bValue, ok := value.(string)
@@ -67,6 +79,7 @@ func (b *BaseConfLoader) GetString(key string, defultValue string) string {
 	return defultValue
 }
 
+//GetFloat 获取float32类型的配置参数
 func (b *BaseConfLoader) GetFloat(key string, defultValue float32) float32 {
 	if value, ok := b.confMap[key]; ok {
 		fValue, ok := value.(float32)
@@ -78,6 +91,7 @@ func (b *BaseConfLoader) GetFloat(key string, defultValue float32) float32 {
 	return defultValue
 }
 
+//LoadConfig 加载配置文件
 func LoadConfig(file string) (ConfLoader, error) {
 	tmpStr := strings.Split(file, FileNameDefultStepSep)
 	if len(tmpStr) < 2 {
@@ -89,8 +103,8 @@ func LoadConfig(file string) (ConfLoader, error) {
 		loader := &YamlLoader{}
 		loader.LoadConfigFromFile(file)
 		return loader, nil
-	case XmlConfType:
-		loader := &XmlLoader{}
+	case XMLConfType:
+		loader := &XMLLoader{}
 		loader.LoadConfigFromFile(file)
 		return loader, nil
 	case TomlConfType:

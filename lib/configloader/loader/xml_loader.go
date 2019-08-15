@@ -7,13 +7,15 @@ import (
 	"os"
 )
 
-type XmlLoader struct {
+//XMLLoader xml配置文件加载队对象
+type XMLLoader struct {
 	BaseConfLoader
 	confPath string
 }
 
+//LoadConfigFromFile 读取配置
 //TODO：xml读取
-func (x *XmlLoader) LoadConfigFromFile(fileName string) {
+func (x *XMLLoader) LoadConfigFromFile(fileName string) {
 	x.BaseConfLoader.lock.Lock()
 	defer x.BaseConfLoader.lock.Unlock()
 	path := os.Getenv(EnvConfBasePath)
@@ -40,7 +42,8 @@ func (x *XmlLoader) LoadConfigFromFile(fileName string) {
 	x.confPath = path
 }
 
-func (x *XmlLoader) LoadConfigFromFileReader(file *os.File) {
+//LoadConfigFromFileReader 从fileReader对象中读取对象
+func (x *XMLLoader) LoadConfigFromFileReader(file *os.File) {
 	x.BaseConfLoader.lock.Lock()
 	defer x.BaseConfLoader.lock.Unlock()
 	bs, err := ioutil.ReadAll(bufio.NewReader(file))
@@ -52,4 +55,8 @@ func (x *XmlLoader) LoadConfigFromFileReader(file *os.File) {
 		panic(err)
 	}
 	x.confPath = file.Name()
+}
+
+func (x *XMLLoader) ReLoadConf() {
+	x.LoadConfigFromFile(x.confPath)
 }

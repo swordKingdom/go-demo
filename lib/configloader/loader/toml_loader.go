@@ -6,11 +6,13 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
+//TomlLoader toml配置文件加载对象
 type TomlLoader struct {
 	BaseConfLoader
 	confPath string
 }
 
+//LoadConfigFromFile 读取配置
 //TODO：toml读取
 func (t *TomlLoader) LoadConfigFromFile(fileName string) {
 	t.BaseConfLoader.lock.Lock()
@@ -33,6 +35,7 @@ func (t *TomlLoader) LoadConfigFromFile(fileName string) {
 	t.confPath = path
 }
 
+//LoadConfigFromFileReader 通过fileReader对象读取对象
 func (t *TomlLoader) LoadConfigFromFileReader(file *os.File) {
 	t.BaseConfLoader.lock.Lock()
 	defer t.BaseConfLoader.lock.Unlock()
@@ -40,4 +43,8 @@ func (t *TomlLoader) LoadConfigFromFileReader(file *os.File) {
 		// handle error
 	}
 	t.confPath = file.Name()
+}
+
+func (t *TomlLoader) ReLoadConf() {
+	t.LoadConfigFromFile(t.confPath)
 }
