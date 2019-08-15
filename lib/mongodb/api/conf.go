@@ -19,7 +19,7 @@ type MgoConf struct {
 	PoolLimit int
 }
 
-func (c *MgoConf)Cype()*MgoConf{
+func (c *MgoConf) Cype() *MgoConf {
 	cpyeConf := new(MgoConf)
 	return cpyeConf
 }

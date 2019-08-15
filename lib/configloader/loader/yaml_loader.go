@@ -1,4 +1,4 @@
-package configloadder
+package loader
 
 import (
 	"bufio"
@@ -14,6 +14,8 @@ type YamlLoader struct {
 }
 
 func (y *YamlLoader) LoadConfigFromFile(fileName string) {
+	y.BaseConfLoader.lock.Lock()
+	defer y.BaseConfLoader.lock.Unlock()
 	path := os.Getenv(EnvConfBasePath)
 	if path == "" {
 		path = EnvConfBasePath
@@ -39,6 +41,8 @@ func (y *YamlLoader) LoadConfigFromFile(fileName string) {
 }
 
 func (y *YamlLoader) LoadConfigFromFileReader(file *os.File) {
+	y.BaseConfLoader.lock.Lock()
+	defer y.BaseConfLoader.lock.Unlock()
 	bs, err := ioutil.ReadAll(bufio.NewReader(file))
 	if err != nil {
 		panic(err)

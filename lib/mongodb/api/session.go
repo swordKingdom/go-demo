@@ -1,18 +1,20 @@
 package api
 
-import "github.com/globalsign/mgo"
+import (
+	"github.com/globalsign/mgo"
+	"this_is_a_explame/lib"
+)
 
 type MongoSession struct {
 	*mgo.Session
-	conf *MgoConf
+	conf *lib.MgoConf
 }
 
-func (s *MongoSession)Find(){
+func (s *MongoSession) Find() {
 	s.DB(s.conf.Database)
 }
 
-
-func NewMongoDBSessionWithConf(conf *MgoConf) (*MongoSession, error) {
+func NewMongoDBSessionWithConf(conf *lib.MgoConf) (*MongoSession, error) {
 	cloneConf := conf.Cype()
 	dialInfo := &mgo.DialInfo{
 		Username:      cloneConf.Username,
@@ -23,9 +25,9 @@ func NewMongoDBSessionWithConf(conf *MgoConf) (*MongoSession, error) {
 		MaxIdleTimeMS: cloneConf.MaxIdleTimeMS,
 		PoolLimit:     cloneConf.PoolLimit,
 	}
-	session,err := mgo.DialWithInfo(dialInfo)
+	session, err := mgo.DialWithInfo(dialInfo)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	return &MongoSession{session,cloneConf}, nil
+	return &MongoSession{session, cloneConf}, nil
 }

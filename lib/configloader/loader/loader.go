@@ -1,9 +1,10 @@
-package configloadder
+package loader
 
 import (
 	"fmt"
 	"os"
 	"strings"
+	"sync"
 )
 
 const (
@@ -30,6 +31,7 @@ type ConfLoaderOp interface {
 
 type BaseConfLoader struct {
 	confMap map[interface{}]interface{}
+	lock    *sync.Mutex
 }
 
 func (b *BaseConfLoader) GetInt(key string, defultValue int) int {

@@ -1,17 +1,17 @@
-package conf
+package configloader
 
 import (
-	"this_is_a_explame/lib/configloadder"
+	"this_is_a_explame/lib/configloader/loader"
 	"this_is_a_explame/lib/util"
 )
 
 var (
-	GlobalConf          configloadder.ConfLoader
+	GlobalConf          loader.ConfLoader
 	defaultConfFileName = []string{"conf.yml", "conf.toml", "conf.xml"}
 )
 
 func initWithFileName(flieName string) error {
-	conf, err := configloadder.LoadConfig("conf.yaml")
+	conf, err := loader.LoadConfig("conf.yaml")
 	if err != nil {
 		return err
 	}

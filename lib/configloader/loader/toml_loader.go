@@ -1,4 +1,4 @@
-package configloadder
+package loader
 
 import (
 	"os"
@@ -13,6 +13,8 @@ type TomlLoader struct {
 
 //TODO：toml读取
 func (t *TomlLoader) LoadConfigFromFile(fileName string) {
+	t.BaseConfLoader.lock.Lock()
+	defer t.BaseConfLoader.lock.Unlock()
 	path := os.Getenv(EnvConfBasePath)
 	if path == "" {
 		path = EnvConfBasePath
@@ -32,6 +34,8 @@ func (t *TomlLoader) LoadConfigFromFile(fileName string) {
 }
 
 func (t *TomlLoader) LoadConfigFromFileReader(file *os.File) {
+	t.BaseConfLoader.lock.Lock()
+	defer t.BaseConfLoader.lock.Unlock()
 	if _, err := toml.DecodeReader(file, &t.BaseConfLoader.confMap); err != nil {
 		// handle error
 	}

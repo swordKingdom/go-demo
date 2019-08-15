@@ -1,4 +1,4 @@
-package configloadder
+package loader
 
 import (
 	"bufio"
@@ -14,6 +14,8 @@ type XmlLoader struct {
 
 //TODO：xml读取
 func (x *XmlLoader) LoadConfigFromFile(fileName string) {
+	x.BaseConfLoader.lock.Lock()
+	defer x.BaseConfLoader.lock.Unlock()
 	path := os.Getenv(EnvConfBasePath)
 	if path == "" {
 		path = EnvConfBasePath
@@ -39,6 +41,8 @@ func (x *XmlLoader) LoadConfigFromFile(fileName string) {
 }
 
 func (x *XmlLoader) LoadConfigFromFileReader(file *os.File) {
+	x.BaseConfLoader.lock.Lock()
+	defer x.BaseConfLoader.lock.Unlock()
 	bs, err := ioutil.ReadAll(bufio.NewReader(file))
 	if err != nil {
 		panic(err)

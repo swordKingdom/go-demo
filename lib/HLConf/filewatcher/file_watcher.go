@@ -1,4 +1,4 @@
-package file_watcher
+package filewatcher
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 	"github.com/howeyc/fsnotify"
 )
 
-func RunFileWatcher(){
+func RunFileWatcher() {
 	watcher, err := fsnotify.NewWatcher()
 	defer watcher.Close()
 	if err != nil {
