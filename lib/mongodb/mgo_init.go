@@ -2,13 +2,14 @@ package mongodb
 
 import (
 	"fmt"
-	"this_is_a_explame/lib"
+
 	"this_is_a_explame/lib/configloader"
+	"this_is_a_explame/lib/mongodb/api"
 )
 
-var mgoConnMap = make(map[string]*lib.MongoSession)
+var mgoConnMap = make(map[string]*api.MongoSession)
 
-func Mongo(key string) (*lib.MongoSession, error) {
+func Mongo(key string) (*api.MongoSession, error) {
 	if conn, ok := mgoConnMap[key]; ok {
 		return conn, nil
 	} else {
@@ -18,10 +19,10 @@ func Mongo(key string) (*lib.MongoSession, error) {
 
 func init() {
 	userName := configloader.GlobalConf.GetString("userName", "hhh")
-	mgoConf := &lib.MgoConf{
+	mgoConf := &api.MgoConf{
 		Username: userName,
 	}
-	session, err := lib.NewMongoDBSessionWithConf(mgoConf)
+	session, err := api.NewMongoDBSessionWithConf(mgoConf)
 	if err == nil {
 		mgoConnMap[""] = session
 	}
