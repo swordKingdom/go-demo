@@ -3,8 +3,9 @@ package HLConf
 import (
 	"fmt"
 	"testing"
-	"this_is_a_explame/lib/configloader/loader"
 	"time"
+
+	"this_is_a_explame/lib/configloader/loader"
 )
 
 func TestHotLoadingConf_Iint(t *testing.T) {

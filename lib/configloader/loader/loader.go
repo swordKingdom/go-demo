@@ -39,18 +39,18 @@ type ConfLoaderOp interface {
 }
 
 //BaseConfLoader 配置文件对象操作的实现对象
-type BaseConfLoader struct {
+type baseConfLoader struct {
 	confMap map[interface{}]interface{}
 	lock    *sync.Mutex
 }
 
-func (b *BaseConfLoader) init() {
+func (b *baseConfLoader) init() {
 	b.lock = new(sync.Mutex)
 	b.confMap = make(map[interface{}]interface{})
 }
 
 //GetInt 获取Int类型的配置参数
-func (b *BaseConfLoader) GetInt(key string, defultValue int) int {
+func (b *baseConfLoader) GetInt(key string, defultValue int) int {
 	if value, ok := b.confMap[key]; ok {
 		intValue, ok := value.(int)
 		if ok {
@@ -62,7 +62,7 @@ func (b *BaseConfLoader) GetInt(key string, defultValue int) int {
 }
 
 //GetBool 获取bool类型的配置参数
-func (b *BaseConfLoader) GetBool(key string, defultValue bool) bool {
+func (b *baseConfLoader) GetBool(key string, defultValue bool) bool {
 	if value, ok := b.confMap[key]; ok {
 		bValue, ok := value.(bool)
 		if ok {
@@ -74,7 +74,7 @@ func (b *BaseConfLoader) GetBool(key string, defultValue bool) bool {
 }
 
 //GetString 获取string类型的配置参数
-func (b *BaseConfLoader) GetString(key string, defultValue string) string {
+func (b *baseConfLoader) GetString(key string, defultValue string) string {
 	if value, ok := b.confMap[key]; ok {
 		bValue, ok := value.(string)
 		if ok {
@@ -86,7 +86,7 @@ func (b *BaseConfLoader) GetString(key string, defultValue string) string {
 }
 
 //GetFloat 获取float32类型的配置参数
-func (b *BaseConfLoader) GetFloat(key string, defultValue float32) float32 {
+func (b *baseConfLoader) GetFloat(key string, defultValue float32) float32 {
 	if value, ok := b.confMap[key]; ok {
 		fValue, ok := value.(float32)
 		if ok {

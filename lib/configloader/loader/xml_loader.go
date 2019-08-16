@@ -10,15 +10,15 @@ import (
 
 //XMLLoader xml配置文件加载队对象
 type XMLLoader struct {
-	BaseConfLoader
+	baseConfLoader
 	confPath string
 }
 
 //LoadConfigFromFile 读取配置
 //TODO：xml读取
 func (x *XMLLoader) LoadConfigFromFile(fileName string) error {
-	x.BaseConfLoader.lock.Lock()
-	defer x.BaseConfLoader.lock.Unlock()
+	x.baseConfLoader.lock.Lock()
+	defer x.baseConfLoader.lock.Unlock()
 	if fileName == "" {
 		fileName = os.Getenv(EnvConfBasePath)
 		if fileName == "" {
@@ -38,7 +38,7 @@ func (x *XMLLoader) LoadConfigFromFile(fileName string) error {
 	if err != nil {
 		return err
 	}
-	err = xml.Unmarshal(bs, &x.BaseConfLoader.confMap)
+	err = xml.Unmarshal(bs, &x.baseConfLoader.confMap)
 	if err != nil {
 		return err
 	}
@@ -48,14 +48,14 @@ func (x *XMLLoader) LoadConfigFromFile(fileName string) error {
 
 //LoadConfigFromFileReader 从fileReader对象中读取对象
 func (x *XMLLoader) LoadConfigFromFileReader(file *os.File) error {
-	x.BaseConfLoader.init()
-	x.BaseConfLoader.lock.Lock()
-	defer x.BaseConfLoader.lock.Unlock()
+	x.baseConfLoader.init()
+	x.baseConfLoader.lock.Lock()
+	defer x.baseConfLoader.lock.Unlock()
 	bs, err := ioutil.ReadAll(bufio.NewReader(file))
 	if err != nil {
 		return err
 	}
-	err = xml.Unmarshal(bs, &x.BaseConfLoader.confMap)
+	err = xml.Unmarshal(bs, &x.baseConfLoader.confMap)
 	if err != nil {
 		return err
 	}

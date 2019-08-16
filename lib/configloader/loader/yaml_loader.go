@@ -11,15 +11,15 @@ import (
 
 //YamlLoader yaml配置文件加载对象
 type YamlLoader struct {
-	BaseConfLoader
+	baseConfLoader
 	confPath string
 }
 
 //LoadConfigFromFile 读取配置文件
 func (y *YamlLoader) LoadConfigFromFile(fileName string) error {
-	y.BaseConfLoader.init()
-	y.BaseConfLoader.lock.Lock()
-	defer y.BaseConfLoader.lock.Unlock()
+	y.baseConfLoader.init()
+	y.baseConfLoader.lock.Lock()
+	defer y.baseConfLoader.lock.Unlock()
 	if fileName == "" {
 		fileName = os.Getenv(EnvConfBasePath)
 		if fileName == "" {
@@ -39,7 +39,7 @@ func (y *YamlLoader) LoadConfigFromFile(fileName string) error {
 	if err != nil {
 		return err
 	}
-	err = yaml.Unmarshal(bs, &y.BaseConfLoader.confMap)
+	err = yaml.Unmarshal(bs, &y.baseConfLoader.confMap)
 	if err != nil {
 		return err
 	}
@@ -49,13 +49,13 @@ func (y *YamlLoader) LoadConfigFromFile(fileName string) error {
 
 //LoadConfigFromFileReader 从fileReader对象中读取配置
 func (y *YamlLoader) LoadConfigFromFileReader(file *os.File) error {
-	y.BaseConfLoader.lock.Lock()
-	defer y.BaseConfLoader.lock.Unlock()
+	y.baseConfLoader.lock.Lock()
+	defer y.baseConfLoader.lock.Unlock()
 	bs, err := ioutil.ReadAll(bufio.NewReader(file))
 	if err != nil {
 		return err
 	}
-	err = yaml.Unmarshal(bs, &y.BaseConfLoader.confMap)
+	err = yaml.Unmarshal(bs, &y.baseConfLoader.confMap)
 	if err != nil {
 		return err
 	}

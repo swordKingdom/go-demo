@@ -9,16 +9,16 @@ import (
 
 //TomlLoader toml配置文件加载对象
 type TomlLoader struct {
-	BaseConfLoader
+	baseConfLoader
 	confPath string
 }
 
 //LoadConfigFromFile 读取配置
 //TODO：toml读取
 func (t *TomlLoader) LoadConfigFromFile(fileName string) error {
-	t.BaseConfLoader.init()
-	t.BaseConfLoader.lock.Lock()
-	defer t.BaseConfLoader.lock.Unlock()
+	t.baseConfLoader.init()
+	t.baseConfLoader.lock.Lock()
+	defer t.baseConfLoader.lock.Unlock()
 	if fileName == "" {
 		fileName = os.Getenv(EnvConfBasePath)
 		if fileName == "" {
@@ -33,7 +33,7 @@ func (t *TomlLoader) LoadConfigFromFile(fileName string) error {
 		return err
 	}
 	defer file.Close()
-	if _, err := toml.DecodeReader(file, &t.BaseConfLoader.confMap); err != nil {
+	if _, err := toml.DecodeReader(file, &t.baseConfLoader.confMap); err != nil {
 		// handle error
 	}
 	t.confPath = fileName
@@ -42,9 +42,9 @@ func (t *TomlLoader) LoadConfigFromFile(fileName string) error {
 
 //LoadConfigFromFileReader 通过fileReader对象读取对象
 func (t *TomlLoader) LoadConfigFromFileReader(file *os.File) error {
-	t.BaseConfLoader.lock.Lock()
-	defer t.BaseConfLoader.lock.Unlock()
-	if _, err := toml.DecodeReader(file, &t.BaseConfLoader.confMap); err != nil {
+	t.baseConfLoader.lock.Lock()
+	defer t.baseConfLoader.lock.Unlock()
+	if _, err := toml.DecodeReader(file, &t.baseConfLoader.confMap); err != nil {
 		// handle error
 		return err
 	}
