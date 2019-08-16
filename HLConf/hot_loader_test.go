@@ -5,12 +5,12 @@ import (
 	"testing"
 	"time"
 
-	"this_is_a_explame/lib/configloader/loader"
+	"this_is_a_explame/lib/configloader"
 )
 
 func TestHotLoadingConf_Iint(t *testing.T) {
 	hotLoader := &HotLoadingConf{}
-	conf, err := loader.LoadConfig("conf.yml")
+	conf, err := configloader.LoadConfig("conf.yml")
 	if err != nil {
 
 	}
