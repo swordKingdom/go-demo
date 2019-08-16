@@ -11,7 +11,7 @@ const (
 	//EnvConfBasePath 默认配置文件路径，配置在系统环境变量中
 	EnvConfBasePath = "ENV_CONF_FILE"
 	//YamlConfType yaml文件类型
-	YamlConfType = "yaml"
+	YamlConfType = "yml"
 	//XMLConfType xml文件类型
 	XMLConfType = "xml"
 	//TomlConfType toml文件类型
@@ -24,9 +24,10 @@ const (
 //ConfLoader 配置加载器接口
 type ConfLoader interface {
 	ConfLoaderOp
-	LoadConfigFromFile(file string)
-	LoadConfigFromFileReader(file *os.File)
+	LoadConfigFromFile(file string) error
+	LoadConfigFromFileReader(file *os.File) error
 	ReLoadConf()
+	GetFileName() string
 }
 
 //ConfLoaderOp 获取配置对象操作的接口
@@ -41,6 +42,11 @@ type ConfLoaderOp interface {
 type BaseConfLoader struct {
 	confMap map[interface{}]interface{}
 	lock    *sync.Mutex
+}
+
+func (b *BaseConfLoader) init() {
+	b.lock = new(sync.Mutex)
+	b.confMap = make(map[interface{}]interface{})
 }
 
 //GetInt 获取Int类型的配置参数
@@ -101,16 +107,16 @@ func LoadConfig(file string) (ConfLoader, error) {
 	switch confType {
 	case YamlConfType:
 		loader := &YamlLoader{}
-		loader.LoadConfigFromFile(file)
-		return loader, nil
+		err := loader.LoadConfigFromFile(file)
+		return loader, err
 	case XMLConfType:
 		loader := &XMLLoader{}
-		loader.LoadConfigFromFile(file)
-		return loader, nil
+		err := loader.LoadConfigFromFile(file)
+		return loader, err
 	case TomlConfType:
 		loader := &TomlLoader{}
-		loader.LoadConfigFromFile(file)
-		return loader, nil
+		err := loader.LoadConfigFromFile(file)
+		return loader, err
 	default:
 		return nil, fmt.Errorf("unsupport conf type: %v", confType)
 	}

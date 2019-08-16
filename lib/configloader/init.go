@@ -10,8 +10,8 @@ var (
 	defaultConfFileName = []string{"conf.yml", "conf.toml", "conf.xml"}
 )
 
-func initloader(flieName string) error {
-	conf, err := loader.LoadConfig("conf.yaml")
+func initLoader(flieName string) error {
+	conf, err := loader.LoadConfig("conf.yml")
 	if err != nil {
 		return err
 	}
@@ -26,7 +26,7 @@ func init() {
 		for _, confFile := range defaultConfFileName {
 			for _, projectFile := range projectFileList {
 				if confFile == projectFile {
-					err := initloader(confFile)
+					err := initLoader(confFile)
 					if err != nil {
 						continue
 					}

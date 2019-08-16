@@ -1,6 +1,7 @@
 package loader
 
 import (
+	"errors"
 	"os"
 
 	"github.com/BurntSushi/toml"
@@ -14,37 +15,47 @@ type TomlLoader struct {
 
 //LoadConfigFromFile 读取配置
 //TODO：toml读取
-func (t *TomlLoader) LoadConfigFromFile(fileName string) {
+func (t *TomlLoader) LoadConfigFromFile(fileName string) error {
+	t.BaseConfLoader.init()
 	t.BaseConfLoader.lock.Lock()
 	defer t.BaseConfLoader.lock.Unlock()
-	path := os.Getenv(EnvConfBasePath)
-	if path == "" {
-		path = EnvConfBasePath
+	if fileName == "" {
+		fileName = os.Getenv(EnvConfBasePath)
+		if fileName == "" {
+			fileName = EnvConfBasePath
+		}
 	}
-	if info, _ := os.Stat(path); info == nil {
-		return
+	if info, _ := os.Stat(fileName); info == nil {
+		return errors.New("load conf error")
 	}
-	file, err := os.Open(path)
+	file, err := os.Open(fileName)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer file.Close()
 	if _, err := toml.DecodeReader(file, &t.BaseConfLoader.confMap); err != nil {
 		// handle error
 	}
-	t.confPath = path
+	t.confPath = fileName
+	return nil
 }
 
 //LoadConfigFromFileReader 通过fileReader对象读取对象
-func (t *TomlLoader) LoadConfigFromFileReader(file *os.File) {
+func (t *TomlLoader) LoadConfigFromFileReader(file *os.File) error {
 	t.BaseConfLoader.lock.Lock()
 	defer t.BaseConfLoader.lock.Unlock()
 	if _, err := toml.DecodeReader(file, &t.BaseConfLoader.confMap); err != nil {
 		// handle error
+		return err
 	}
 	t.confPath = file.Name()
+	return nil
 }
 
 func (t *TomlLoader) ReLoadConf() {
 	t.LoadConfigFromFile(t.confPath)
+}
+
+func (t *TomlLoader) GetFileName() string {
+	return t.confPath
 }
