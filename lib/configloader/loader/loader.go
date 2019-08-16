@@ -1,24 +1,13 @@
 package loader
 
 import (
-	"fmt"
 	"os"
-	"strings"
 	"sync"
 )
 
 const (
 	//EnvConfBasePath 默认配置文件路径，配置在系统环境变量中
 	EnvConfBasePath = "ENV_CONF_FILE"
-	//YamlConfType yaml文件类型
-	YamlConfType = "yml"
-	//XMLConfType xml文件类型
-	XMLConfType = "xml"
-	//TomlConfType toml文件类型
-	TomlConfType = "toml"
-
-	//FileNameDefultStepSep 文件后缀分割符号
-	FileNameDefultStepSep = "."
 )
 
 //ConfLoader 配置加载器接口
@@ -95,29 +84,4 @@ func (b *baseConfLoader) GetFloat(key string, defultValue float32) float32 {
 		return defultValue
 	}
 	return defultValue
-}
-
-//LoadConfig 加载配置文件
-func LoadConfig(file string) (ConfLoader, error) {
-	tmpStr := strings.Split(file, FileNameDefultStepSep)
-	if len(tmpStr) < 2 {
-		return nil, fmt.Errorf("conf file name:%v  error", file)
-	}
-	confType := tmpStr[len(tmpStr)-1]
-	switch confType {
-	case YamlConfType:
-		loader := &YamlLoader{}
-		err := loader.LoadConfigFromFile(file)
-		return loader, err
-	case XMLConfType:
-		loader := &XMLLoader{}
-		err := loader.LoadConfigFromFile(file)
-		return loader, err
-	case TomlConfType:
-		loader := &TomlLoader{}
-		err := loader.LoadConfigFromFile(file)
-		return loader, err
-	default:
-		return nil, fmt.Errorf("unsupport conf type: %v", confType)
-	}
 }

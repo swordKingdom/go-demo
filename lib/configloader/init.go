@@ -1,42 +1,53 @@
 package configloader
 
 import (
+	"errors"
+	"fmt"
+	"strings"
+
 	"this_is_a_explame/lib/configloader/loader"
-	"this_is_a_explame/lib/util"
 )
 
-var (
-	GlobalConf          loader.ConfLoader
-	defaultConfFileName = []string{"conf.yml", "conf.toml", "conf.xml"}
+type generatorFunc func() loader.ConfLoader
+
+var confLoaderMap = make(map[string]generatorFunc)
+
+const (
+	//YamlConfType yaml文件类型
+	YamlConfType = "yml"
+	//XMLConfType xml文件类型
+	XMLConfType = "xml"
+	//TomlConfType toml文件类型
+	TomlConfType = "toml"
+
+	//FileNameDefultStepSep 文件后缀分割符号
+	FileNameDefultStepSep = "."
 )
 
-func initLoader(flieName string) error {
-	conf, err := loader.LoadConfig("conf.yml")
-	if err != nil {
-		return err
+//LoadConfig 加载配置文件
+func LoadConfig(file string) (loader.ConfLoader, error) {
+	tmpStr := strings.Split(file, FileNameDefultStepSep)
+	if len(tmpStr) < 2 {
+		return nil, fmt.Errorf("conf file name:%v  error", file)
 	}
-	GlobalConf = conf
-	return nil
+	confType := tmpStr[len(tmpStr)-1]
+	if generator, ok := confLoaderMap[confType]; ok {
+		l := generator()
+		err := l.LoadConfigFromFile(file)
+		return l, err
+	} else {
+		return nil, errors.New("unsupport type conf file")
+	}
+}
+
+func RegisteConfLoaderGenerator(confType string, f generatorFunc) {
+	if _, ok := confLoaderMap[confType]; !ok {
+		confLoaderMap[confType] = f
+	}
 }
 
 func init() {
-	projectFileList, err := util.GetDirList("./")
-	if err == nil && len(projectFileList) != 0 {
-		success := false
-		for _, confFile := range defaultConfFileName {
-			for _, projectFile := range projectFileList {
-				if confFile == projectFile {
-					err := initLoader(confFile)
-					if err != nil {
-						continue
-					}
-				}
-			}
-		}
-		if !success {
-			//TODO：抛出异常
-		}
-	} else {
-		//TODO：抛出异常
-	}
+	confLoaderMap[YamlConfType] = loader.NewYamlLoader
+	confLoaderMap[XMLConfType] = loader.NewXMLLoader
+	confLoaderMap[TomlConfType] = loader.NewTomlLoader
 }

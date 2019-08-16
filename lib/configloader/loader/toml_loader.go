@@ -59,3 +59,7 @@ func (t *TomlLoader) ReLoadConf() {
 func (t *TomlLoader) GetFileName() string {
 	return t.confPath
 }
+
+func NewTomlLoader() ConfLoader {
+	return &TomlLoader{}
+}

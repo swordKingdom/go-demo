@@ -70,3 +70,7 @@ func (y *YamlLoader) ReLoadConf() {
 func (y *YamlLoader) GetFileName() string {
 	return y.confPath
 }
+
+func NewYamlLoader() ConfLoader {
+	return &YamlLoader{}
+}

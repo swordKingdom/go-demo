@@ -70,3 +70,7 @@ func (x *XMLLoader) ReLoadConf() {
 func (x *XMLLoader) GetFileName() string {
 	return x.confPath
 }
+
+func NewXMLLoader() ConfLoader {
+	return &XMLLoader{}
+}
