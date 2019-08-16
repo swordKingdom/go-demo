@@ -12,12 +12,14 @@ type ProcessFunc func(*watcher.Watcher)
 
 //RunFileWatcher 启动文件监控
 func RunFileWatcher(fileName string, processer ProcessFunc, interval time.Duration) {
-	w := watcher.New()
-	w.SetMaxEvents(1)
-	w.FilterOps(watcher.Write)
-	w.Add(fileName)
-	if err := w.Start(interval); err != nil {
-		log.Fatalln(err)
-	}
-	go processer(w)
+	go func() {
+		w := watcher.New()
+		w.SetMaxEvents(1)
+		w.FilterOps(watcher.Write)
+		w.Add(fileName)
+		go processer(w)
+		if err := w.Start(interval); err != nil {
+			log.Fatalln(err)
+		}
+	}()
 }
