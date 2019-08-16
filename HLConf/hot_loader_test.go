@@ -4,20 +4,17 @@ import (
 	"fmt"
 	"testing"
 	"time"
-
-	"this_is_a_explame/lib/configloader"
 )
 
 func TestHotLoadingConf_Iint(t *testing.T) {
 	hotLoader := &HotLoadingConf{}
-	conf, err := configloader.LoadConfig("conf.yml")
+	err := hotLoader.Init("conf.yml")
 	if err != nil {
-
+		return
 	}
-	hotLoader.Init(conf)
-	msg := conf.GetString("msg", "")
+	msg := hotLoader.GetString("msg", "")
 	fmt.Println(msg)
 	time.Sleep(30 * time.Second)
-	msg = conf.GetString("msg", "")
+	msg = hotLoader.GetString("msg", "")
 	fmt.Println(msg)
 }

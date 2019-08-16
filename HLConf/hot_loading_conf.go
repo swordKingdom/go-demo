@@ -1,8 +1,8 @@
 package HLConf
 
 import (
-	"errors"
 	"log"
+	"this_is_a_explame/lib/configloader"
 	"time"
 
 	"this_is_a_explame/lib/configloader/loader"
@@ -12,21 +12,22 @@ import (
 )
 
 type HotLoadingConf struct {
-	loader loader.ConfLoader
-	w      *filewatcher.FileWatcher
+	loader.ConfLoader
+	w *filewatcher.FileWatcher
 }
 
-func (h *HotLoadingConf) Init(loader loader.ConfLoader) error {
-	if loader == nil {
-		return errors.New("conf loader is nil")
+func (h *HotLoadingConf) Init(fileName string) error {
+	conf, err := configloader.LoadConfig(fileName)
+	if err != nil {
+		return err
 	}
-	h.loader = loader
+	h.ConfLoader = conf
 	pFunc := func(w *watcher.Watcher) {
 		for {
 			select {
 			case event := <-w.Event:
 				if event.Op == watcher.Write {
-					h.loader.ReLoadConf()
+					h.ConfLoader.ReLoadConf()
 				}
 			case err := <-w.Error:
 				log.Fatalln(err)
@@ -35,6 +36,6 @@ func (h *HotLoadingConf) Init(loader loader.ConfLoader) error {
 			}
 		}
 	}
-	h.w = filewatcher.RunFileWatcher(loader.GetFileName(), pFunc, 1*time.Second)
+	h.w = filewatcher.RunFileWatcher(conf.GetFileName(), pFunc, 1*time.Second)
 	return nil
 }
