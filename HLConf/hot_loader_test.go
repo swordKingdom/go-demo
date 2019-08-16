@@ -14,7 +14,7 @@ func TestHotLoadingConf_Iint(t *testing.T) {
 	if err != nil {
 
 	}
-	hotLoader.Iint(conf)
+	hotLoader.Init(conf)
 	msg := conf.GetString("msg", "")
 	fmt.Println(msg)
 	time.Sleep(30 * time.Second)

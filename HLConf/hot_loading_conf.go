@@ -16,7 +16,7 @@ type HotLoadingConf struct {
 	w      *filewatcher.FileWatcher
 }
 
-func (h *HotLoadingConf) Iint(loader loader.ConfLoader) error {
+func (h *HotLoadingConf) Init(loader loader.ConfLoader) error {
 	if loader == nil {
 		return errors.New("conf loader is nil")
 	}
