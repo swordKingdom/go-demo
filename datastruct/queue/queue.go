@@ -16,36 +16,78 @@ type BaseQueue interface {
 }
 
 type Queue struct {
-	data *linkedlist.BNode
-	len  int
-	size int
-	lock *sync.RWMutex
+	front *linkedlist.BNode
+	rear  *linkedlist.BNode
+	data  *linkedlist.BNode
+	len   int
+	size  int
+	lock  *sync.RWMutex
 }
 
 func (q *Queue) InQueue(a interface{}) {
-	panic("implement me")
+	q.lock.Lock()
+	defer q.lock.Unlock()
+	if q.size < q.len+1 {
+		return
+	}
+
+	if q.data == nil {
+		node := &linkedlist.BNode{Val: a}
+		q.data = node
+		q.front = node
+		q.rear = node
+	} else {
+		node := &linkedlist.BNode{Val: a, Pre: q.rear}
+		q.rear.Next = node
+		q.rear = q.rear.Next
+	}
+	q.len++
 }
 
 func (q *Queue) OutQueue() interface{} {
-	panic("implement me")
+	q.lock.Lock()
+	defer q.lock.Unlock()
+	if q.len == 0 {
+		return nil
+	}
+	res := q.data.Val
+	q.data = q.data.Next
+	q.front = q.data
+	return res
 }
 
 func (q *Queue) IsEmpty() bool {
-	panic("implement me")
+	q.lock.RLock()
+	defer q.lock.RUnlock()
+	return q.len == 0
 }
 
 func (q *Queue) Clear() bool {
-	panic("implement me")
+	q.lock.Lock()
+	defer q.lock.Unlock()
+	q.data = nil
+	q.front = nil
+	q.rear = nil
+	q.len = 0
+	return true
 }
 
 func (q *Queue) Size() int {
-	panic("implement me")
+	q.lock.RLock()
+	defer q.lock.RUnlock()
+	return q.size
 }
 
 func (q *Queue) IsFull() bool {
 	return q.len == q.size
 }
 
-func (q *Queue) Traverse(func(d interface{})) {
-	panic("implement me")
+func (q *Queue) Traverse(f func(d interface{})) {
+	q.lock.RLock()
+	defer q.lock.RUnlock()
+	tmp := q.data
+	for tmp != nil {
+		f(tmp.Val)
+		tmp = tmp.Next
+	}
 }
