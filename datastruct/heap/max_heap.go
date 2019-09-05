@@ -1,10 +1,13 @@
 package heap
 
+import "sync"
+
 //MaxHeap 最大堆
 //TODO:实现同时支持基础类型：int,int64,float64等的最大堆
 type MaxHeap struct {
 	data      []int
 	equreFunc func(a, b interface{})
+	lock      *sync.RWMutex
 }
 
 //adjustDown 向下沉淀
@@ -41,12 +44,16 @@ func (m *MaxHeap) adjustUp(index int) {
 
 //Add 在堆中增加元素
 func (m *MaxHeap) Add(val int) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
 	m.data = append(m.data, val)
 	m.adjustUp(len(m.data) - 1)
 }
 
 //PollMin 取出堆中增加最大元素
 func (m *MaxHeap) PollMax() int {
+	m.lock.Lock()
+	defer m.lock.Unlock()
 	dataLen := len(m.data)
 	if dataLen == 0 {
 		return 0
