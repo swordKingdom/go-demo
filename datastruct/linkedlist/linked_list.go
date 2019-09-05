@@ -1,7 +1,6 @@
 package linkedlist
 
 import (
-	"reflect"
 	"sync"
 )
 
@@ -43,7 +42,7 @@ func (h *Head) InsertNode(index int, val interface{}) {
 	for ; index > 0; index-- {
 		tmp = tmp.Next
 	}
-	t := reflect.TypeOf(val)
+
 	if tmp.Next == nil {
 		tmp.Next = &Node{Val: val}
 	} else {
