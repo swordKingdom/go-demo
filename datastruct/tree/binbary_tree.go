@@ -50,3 +50,58 @@ func CreatBinaryTree(arr []int) *BinaryTree {
 	buildTree(res, arr, 0, len(arr))
 	return &BinaryTree{root: res}
 }
+
+//LDB 中序遍历
+func getLDBArr(root *TreeNode, add func(val int)) {
+	if root == nil {
+		return
+	}
+	getLDBArr(root.Left, add)
+	add(root.Val)
+	getLDBArr(root.Right, add)
+}
+
+func (b *BinaryTree) LDB() []int {
+	res := make([]int, 0)
+	addFunc := func(val int) {
+		res = append(res, val)
+	}
+	getLDBArr(b.root, addFunc)
+	return res
+}
+
+func getPreOrderArr(root *TreeNode, add func(val int)) {
+	if root == nil {
+		return
+	}
+	add(root.Val)
+	getLDBArr(root.Left, add)
+	getLDBArr(root.Right, add)
+}
+
+func (b *BinaryTree) PreOrder() []int {
+	res := make([]int, 0)
+	addFunc := func(val int) {
+		res = append(res, val)
+	}
+	getPreOrderArr(b.root, addFunc)
+	return res
+}
+
+func getLRDArr(root *TreeNode, add func(val int)) {
+	if root == nil {
+		return
+	}
+	getLDBArr(root.Left, add)
+	getLDBArr(root.Right, add)
+	add(root.Val)
+}
+
+func (b *BinaryTree) LRD() []int {
+	res := make([]int, 0)
+	addFunc := func(val int) {
+		res = append(res, val)
+	}
+	getLRDArr(b.root, addFunc)
+	return res
+}
