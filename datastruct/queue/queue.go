@@ -91,3 +91,7 @@ func (q *Queue) Traverse(f func(d interface{})) {
 		tmp = tmp.Next
 	}
 }
+
+func InitQueue(size int) *Queue {
+	return &Queue{size: size, lock: new(sync.RWMutex)}
+}
