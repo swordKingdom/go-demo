@@ -10,8 +10,12 @@ type BNode struct {
 
 type BLinkedListHead struct {
 	head *BNode
-	Len  int
+	len  int
 	lock *sync.RWMutex
+}
+
+func (b *BNode) Clone() *BNode {
+	return &BNode{Val: b.Val}
 }
 
 func (b *BLinkedListHead) InsertNode(val interface{}, index int) {
@@ -32,7 +36,7 @@ func InitBLinkedList(arr []interface{}) *BLinkedListHead {
 		return nil
 	}
 	head := &BNode{Val: arr[0]}
-	res := &BLinkedListHead{head: head, Len: arrLen, lock: new(sync.RWMutex)}
+	res := &BLinkedListHead{head: head, len: arrLen, lock: new(sync.RWMutex)}
 	for i := 1; i < arrLen; i++ {
 		node := &BNode{Val: arr[i]}
 		head.Next = node

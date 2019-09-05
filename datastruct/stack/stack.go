@@ -18,7 +18,7 @@ type BaseStack interface {
 type stack struct {
 	stackTop *linkedlist.BNode
 	data     *linkedlist.BNode
-	Len      int
+	len      int
 	lock     *sync.RWMutex
 }
 
@@ -31,7 +31,7 @@ func (s *stack) Pop() interface{} {
 	tmp := s.stackTop
 	s.stackTop = s.stackTop.Pre
 	s.stackTop.Next = nil
-	s.Len--
+	s.len--
 	return tmp.Val
 }
 
@@ -47,7 +47,7 @@ func (s *stack) Push(val interface{}) {
 		s.stackTop = s.stackTop.Next
 	}
 
-	s.Len++
+	s.len++
 }
 
 func (s *stack) Top() interface{} {
@@ -59,7 +59,7 @@ func (s *stack) Top() interface{} {
 func (s *stack) IsEmpty() bool {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
-	return s.Len == 0
+	return s.len == 0
 }
 
 func (s *stack) Clear() bool {
@@ -67,7 +67,7 @@ func (s *stack) Clear() bool {
 	defer s.lock.Unlock()
 	s.data = nil
 	s.stackTop = nil
-	s.Len = 0
+	s.len = 0
 	return true
 }
 
@@ -86,7 +86,7 @@ func (s *stack) StackPrint() {
 func (s *stack) Size() int {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
-	return s.Len
+	return s.len
 }
 
 func InitStack() *stack {

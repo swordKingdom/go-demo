@@ -27,14 +27,14 @@ func (n *Node) Clone() *Node {
 type Head struct {
 	head *Node
 	lock *sync.RWMutex
-	Len  int
+	len  int
 }
 
 //InsertNode 在链表中插入元素
 func (h *Head) InsertNode(index int, val interface{}) {
 	h.lock.Lock()
 	defer h.lock.Unlock()
-	if index > h.Len || index < 0 {
+	if index > h.len || index < 0 {
 		return
 	}
 	tmp := h.head
@@ -48,14 +48,14 @@ func (h *Head) InsertNode(index int, val interface{}) {
 	} else {
 		tmp.Next = &Node{Val: val, Next: tmp.Next}
 	}
-	h.Len++
+	h.len++
 }
 
 //GetNode 获取链表中的节点
 func (h *Head) GetNode(index int) *Node {
 	h.lock.RLock()
 	defer h.lock.RUnlock()
-	if index > h.Len || index < 0 {
+	if index > h.len || index < 0 {
 		return nil
 	}
 	tmp := h.head
@@ -69,7 +69,7 @@ func (h *Head) GetNode(index int) *Node {
 func (h *Head) DeleteNode(index int) {
 	h.lock.Lock()
 	defer h.lock.Unlock()
-	if index > h.Len || index < 0 {
+	if index > h.len || index < 0 {
 		return
 	}
 	tmp := h.head
@@ -95,7 +95,7 @@ func (h *Head) Poll() *Node {
 	}
 	res := h.head
 	h.head = h.head.Next
-	h.Len--
+	h.len--
 	return res.Clone()
 }
 
@@ -168,7 +168,7 @@ func InitLinkedListWithArr(arr ...interface{}) *Head {
 		return nil
 	}
 	head := &Node{Val: arr[0]}
-	res := &Head{head: head, Len: arrLen, lock: new(sync.RWMutex)}
+	res := &Head{head: head, len: arrLen, lock: new(sync.RWMutex)}
 	for i := 1; i < arrLen; i++ {
 		head.Next = &Node{Val: arr[i]}
 		head = head.Next
