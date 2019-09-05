@@ -1,6 +1,7 @@
 package heap
 
 //MinHeap 最小堆使用
+//todo:实现同时支持基础类型：int,int64,float64等的最小堆
 type MinHeap struct {
 	data      []int
 	equreFunc func(a, b interface{})
