@@ -6,7 +6,7 @@ import "sync"
 //TODO:实现同时支持基础类型：int,int64,float64等的最大堆
 type MaxHeap struct {
 	data      []int
-	equreFunc func(a, b interface{})
+	equalFunc func(a, b interface{})
 	lock      *sync.RWMutex
 }
 
