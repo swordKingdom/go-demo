@@ -10,34 +10,53 @@ type MaxHeap struct {
 	lock      *sync.RWMutex
 }
 
-//adjustDown 向下沉淀
+//swap 交换数组元素
+func (m *MaxHeap)swap(index1,index2 int) {
+	m.data[index1] ,m.data[index2] =  m.data[index2] ,m.data[index1]
+}
+
+//adjustDown 将首部元素向下沉
 func (m *MaxHeap) adjustDown(index int) {
-	lenth := len(m.data)
-	left := index*2 + 1
-	right := left + 1
-	min := left
-	if right > lenth-1 {
-		return
+	size :=len(m.data)
+	parentIndex := index
+	for parentIndex < size {
+		leftChild := parentIndex <<1 + 1
+		rightChild := leftChild +1
+		maxIndex := leftChild
+		if leftChild >size -1 {
+			break
+		}else if rightChild > size -1 {
+			if m.data[leftChild] > m.data[parentIndex] {
+				m.swap(leftChild,parentIndex)
+			}
+			break
+		}else{
+			if m.data[rightChild] > m.data[maxIndex] {
+				maxIndex = rightChild
+			}
+			if m.data[maxIndex] < m.data[parentIndex] {
+				break
+			}
+			m.swap(maxIndex,parentIndex)
+			parentIndex = maxIndex
+		}
 	}
-	if m.data[right] > m.data[min] {
-		min = right
-	}
-	if m.data[min] < m.data[index] {
-		return
-	}
-	m.data[min], m.data[index] = m.data[index], m.data[min]
-	m.adjustDown(min)
 }
 
 //adjustUp 向上上升
 func (m *MaxHeap) adjustUp(index int) {
-	parent := (index - 1) / 2
-	if parent < 0 {
+	childIndex := index
+	if len(m.data) == 1 {
 		return
 	}
-	if m.data[parent] < m.data[index] {
-		m.data[parent], m.data[index] = m.data[index], m.data[parent]
-		m.adjustUp(parent)
+	for childIndex >0 {
+		parentIndex  := (childIndex-1) >>1
+		if m.data[parentIndex] < m.data[childIndex] {
+			m.swap(parentIndex,childIndex)
+			childIndex = parentIndex
+		}else{
+			break
+		}
 	}
 	return
 }
@@ -54,13 +73,13 @@ func (m *MaxHeap) Add(val int) {
 func (m *MaxHeap) PollMax() int {
 	m.lock.Lock()
 	defer m.lock.Unlock()
-	dataLen := len(m.data)
-	if dataLen == 0 {
+	size := len(m.data)
+	if size == 0 {
 		return 0
 	}
 	res := m.data[0]
-	m.data[0] = m.data[dataLen-1]
-	m.data = m.data[:dataLen-1]
+	m.data[0] = m.data[size-1]
+	m.data = m.data[:size-1]
 	if len(m.data) != 0 {
 		m.adjustDown(0)
 	}
